@@ -148,6 +148,10 @@ def main():
                            supports_check_mode=True,
                            **module_kwargs)
 
+    # TODO uncomment when shade 1.8.0 is released
+    # # stack API introduced in 1.8.0
+    # if not HAS_SHADE or (StrictVersion(shade.__version__) < StrictVersion('1.8.0')):
+    #     module.fail_json(msg='shade 1.8.0 or higher is required for this module')
     if not HAS_SHADE:
         module.fail_json(msg='shade is required for this module')
 
