@@ -104,6 +104,24 @@ def _create_stack(module, stack, cloud):
     except shade.OpenStackCloudException as e:
         module.fail_json(msg=e.message)
 
+def _update_stack(module, stack, cloud):
+    try:
+        stack = cloud.update_stack(
+            module.params['name'],
+            template_file=module.params['template'],
+            environment_files=module.params['environment'],
+            timeout=module.params['timeout'],
+            rollback=module.params['rollback'],
+            wait=True)
+
+        if stack['stack_status'] == 'UPDATE_COMPLETE':
+            return stack
+        else:
+            module.fail_json(msg = "Failure in updating stack: %s" %
+                             stack['stack_status_reason'])
+    except shade.OpenStackCloudException as e:
+        module.fail_json(msg=e.message)
+
 def _system_state_change(module, stack, cloud):
     state = module.params['state']
     if state == 'present':
@@ -148,9 +166,9 @@ def main():
         if state == 'present':
             if not stack:
                 stack = _create_stack(module, stack, cloud)
-                changed = True
             else:
-                changed = False
+                stack = _update_stack(module, stack, cloud)
+            changed = True
             module.exit_json(changed=changed,
                              stack=stack,
                              id=stack.id)
