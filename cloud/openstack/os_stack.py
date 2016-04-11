@@ -52,7 +52,7 @@ options:
       description:
         - Maximum number of seconds to wait for the stack creation
       required: false
-      default: 180
+      default: 3600
 requirements:
     - "python >= 2.6"
     - "shade"
@@ -121,7 +121,7 @@ def main():
         environment=dict(default=None, type='list'),
         parameters=dict(default={}, type='dict'),
         rollback=dict(default=False),
-        timeout=dict(default=180),
+        timeout=dict(default=3600, type='int'),
         state=dict(default='present', choices=['absent', 'present']),
     )
 
