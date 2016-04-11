@@ -34,7 +34,7 @@ options:
         - Path of the template file to use for the stack creation
       required: false
       default: None
-    environment_files:
+    environment:
       description:
         - List of environment files that should be used for the stack creation
       required: false
@@ -66,7 +66,7 @@ EXAMPLES = '''
     name: "{{ stack_name }}"
     state: present
     template: "/path/to/my_stack.yaml"
-    environment_files:
+    environment:
     - /path/to/resource-registry.yaml
     - /path/to/environment.yaml
     parameters:
@@ -89,7 +89,7 @@ def _create_stack(module, stack, cloud):
     try:
         stack = cloud.create_stack(module.params['name'],
                                        template_file=module.params['template'],
-                                       environment_files=module.params['environment_files'],
+                                       environment_files=module.params['environment'],
                                        timeout=module.params['timeout'],
                                        wait=True,
                                        rollback=module.params['rollback'],
@@ -118,7 +118,7 @@ def main():
     argument_spec = openstack_full_argument_spec(
         name=dict(required=True),
         template=dict(default=None),
-        environment_files=dict(default=None, type='list'),
+        environment=dict(default=None, type='list'),
         parameters=dict(default={}, type='dict'),
         rollback=dict(default=False),
         timeout=dict(default=180),
