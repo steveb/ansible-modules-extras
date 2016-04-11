@@ -159,7 +159,7 @@ def main():
                 changed = False
             else:
                 changed = True
-                if not cloud.delete_stack(name):
+                if not cloud.delete_stack(name, wait=True):
                     module.fail_json(msg='delete stack failed for stack: %s' % name)
             module.exit_json(changed=changed)
     except shade.OpenStackCloudException as e:
